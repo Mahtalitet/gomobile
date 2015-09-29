@@ -78,6 +78,8 @@ func (g *objcGen) genH() error {
 		case *types.Interface:
 			if !makeIfaceSummary(t).implementable {
 				g.Printf("@class %s%s;\n\n", g.namePrefix, obj.Name())
+			} else {
+				g.Printf("@protocol %s%s;\n\n", g.namePrefix, obj.Name())
 			}
 		}
 	}
@@ -145,11 +147,21 @@ func (g *objcGen) genM() error {
 	for _, obj := range g.names {
 		named := obj.Type().(*types.Named)
 		switch t := named.Underlying().(type) {
-		case *types.Struct:
-			g.genStructM(obj, t)
 		case *types.Interface:
-			if g.genInterfaceM(obj, t) {
+			if g.genInterfaceM1(obj, t) {
 				interfaces = append(interfaces, obj)
+			}
+		}
+		g.Printf("\n")
+	}
+
+	for _, obj := range g.names {
+		named := obj.Type().(*types.Named)
+		switch t := named.Underlying().(type) {
+        case *types.Struct:
+            g.genStructM(obj, t)
+		case *types.Interface:
+			if g.genInterfaceM2(obj, t) {
 			}
 		}
 		g.Printf("\n")
@@ -491,7 +503,7 @@ func (g *objcGen) genInterfaceH(obj *types.TypeName, t *types.Interface) {
 	g.Printf("@end\n")
 }
 
-func (g *objcGen) genInterfaceM(obj *types.TypeName, t *types.Interface) bool {
+func (g *objcGen) genInterfaceM1(obj *types.TypeName, t *types.Interface) bool {
 	summary := makeIfaceSummary(t)
 
 	desc := fmt.Sprintf("_GO_%s_%s", g.pkgName, obj.Name())
@@ -505,6 +517,14 @@ func (g *objcGen) genInterfaceM(obj *types.TypeName, t *types.Interface) bool {
 		// @interface Interface -- similar to what genStructH does.
 		g.genInterfaceInterface(obj, summary, true)
 	}
+
+	return summary.implementable
+}
+
+func (g *objcGen) genInterfaceM2(obj *types.TypeName, t *types.Interface) bool {
+	summary := makeIfaceSummary(t)
+
+	desc := fmt.Sprintf("_GO_%s_%s", g.pkgName, obj.Name())
 
 	// @implementation Interface -- similar to what genStructM does.
 	g.Printf("@implementation %s%s {\n", g.namePrefix, obj.Name())
