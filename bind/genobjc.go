@@ -297,7 +297,7 @@ func (s *funcSummary) asMethod(g *objcGen) string {
 			params = append(params, fmt.Sprintf("%s:(%s)%s", key, g.objcType(p.typ)+"*", p.name))
 		}
 	}
-	return fmt.Sprintf("(%s)%s%s", s.ret, s.name, strings.Join(params, " "))
+	return fmt.Sprintf("(%s)%s%s", s.ret, firstToLower(s.name), strings.Join(params, " "))
 }
 
 func (s *funcSummary) callMethod(g *objcGen) string {
@@ -318,7 +318,7 @@ func (s *funcSummary) callMethod(g *objcGen) string {
 			params = append(params, fmt.Sprintf("%s:&%s", key, p.name))
 		}
 	}
-	return fmt.Sprintf("%s%s", s.name, strings.Join(params, " "))
+	return fmt.Sprintf("%s%s", firstToLower(s.name), strings.Join(params, " "))
 }
 
 func (s *funcSummary) returnsVal() bool {
