@@ -9,6 +9,7 @@ import (
 	"go/token"
 	"go/types"
 	"strings"
+	"unicode"
 )
 
 // TODO(hyangah): error code/domain propagation
@@ -362,7 +363,10 @@ func (g *objcGen) genGetter(desc string, f *types.Var) {
 		retParams: []paramInfo{{typ: t, name: "ret_"}},
 	}
 
+        tmpName := s.name
+	s.name = firstToLower(tmpName)
 	g.Printf("- %s {\n", s.asMethod(g))
+	s.name = tmpName
 	g.Indent()
 	g.genFunc(desc+"_DESCRIPTOR_", desc+"_FIELD_"+f.Name()+"_GET_", s, true)
 	g.Outdent()
@@ -671,6 +675,12 @@ func (g *objcGen) genInterfaceMethodProxy(obj *types.TypeName, s *funcSummary) {
 	}
 }
 
+func firstToLower(s string) string {
+	a := []rune(s)
+	a[0] = unicode.ToLower(a[0])
+	return string(a)
+}
+
 func (g *objcGen) genStructH(obj *types.TypeName, t *types.Struct) {
 	g.Printf("@interface %s%s : NSObject {\n", g.namePrefix, obj.Name())
 	g.Printf("}\n")
@@ -681,7 +691,7 @@ func (g *objcGen) genStructH(obj *types.TypeName, t *types.Struct) {
 	// accessors to exported fields.
 	for _, f := range exportedFields(t) {
 		name, typ := f.Name(), g.objcFieldType(f.Type())
-		g.Printf("- (%s)%s;\n", typ, name)
+		g.Printf("- (%s)%s;\n", typ, firstToLower(name))
 		g.Printf("- (void)set%s:(%s)v;\n", name, typ)
 	}
 
