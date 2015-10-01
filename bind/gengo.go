@@ -308,7 +308,13 @@ func (g *goGen) genRead(valName, seqName string, typ types.Type) {
 			}
 			g.Printf("// Must be a Go object\n")
 			g.Printf("%s_ref := %s.ReadRef()\n", valName, seqName)
-			g.Printf("%s := %s_ref.Get().(*%s.%s)\n", valName, valName, g.pkg.Name(), o.Name())
+			g.Printf("%s_ref_get := %s_ref.Get()\n", valName, valName)
+			g.Printf("var %s *%s.%s\n", valName, g.pkg.Name(), o.Name())
+			g.Printf("if %s_ref_get == nil {\n", valName)
+			g.Printf("   %s = nil\n", valName)
+			g.Printf("} else {\n")
+			g.Printf("   %s = %s_ref_get.(*%s.%s)\n", valName, valName, g.pkg.Name(), o.Name())
+			g.Printf("}\n")
 		default:
 			g.errorf("unsupported type %s", t)
 		}
@@ -328,6 +334,8 @@ func (g *goGen) genRead(valName, seqName string, typ types.Type) {
 			g.Printf("%s_ref := %s.ReadRef()\n", valName, seqName)
 			g.Printf("if %s_ref.Num < 0 { // go object \n", valName)
 			g.Printf("   %s = %s_ref.Get().(%s.%s)\n", valName, valName, g.pkg.Name(), o.Name())
+			g.Printf("} else if %s_ref.Num == 0 { // nil object \n", valName)
+			g.Printf("   %s = nil\n", valName)
 			if hasProxy {
 				g.Printf("} else {  // foreign object \n")
 				g.Printf("   %s = (*proxy%s)(%s_ref)\n", valName, o.Name(), valName)

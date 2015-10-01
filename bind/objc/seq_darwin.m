@@ -392,7 +392,10 @@ void go_seq_writeRef(GoSeq *seq, GoSeqRef *v) {
 }
 
 void go_seq_writeObjcRef(GoSeq *seq, id obj) {
-  int32_t refnum = [tracker assignRefnumAndIncRefcount:obj];
+  int32_t refnum = 0;
+  if (obj != nil) {
+    refnum = [tracker assignRefnumAndIncRefcount:obj];
+  }
   go_seq_writeInt32(seq, refnum);
 }
 

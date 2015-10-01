@@ -43,6 +43,9 @@ type Ref struct {
 
 // Get returns the underlying object.
 func (r *Ref) Get() interface{} {
+	if r.Num == 0 {
+		return nil
+	}
 	refs.Lock()
 	o, ok := refs.objs[r.Num]
 	refs.Unlock()
