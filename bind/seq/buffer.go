@@ -7,6 +7,7 @@ package seq
 import (
 	"bytes"
 	"fmt"
+	"reflect"
 	"runtime"
 	"unsafe"
 )
@@ -242,6 +243,10 @@ func (b *Buffer) WriteString(v string) {
 }
 
 func (b *Buffer) WriteGoRef(obj interface{}) {
+	if obj == nil || reflect.ValueOf( obj ).IsNil() {
+		b.WriteInt32(int32(0))
+		return
+	}
 	refs.Lock()
 	num := refs.refs[obj]
 	if num != 0 {

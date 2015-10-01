@@ -368,6 +368,7 @@ void go_seq_send(char *descriptor, int code, GoSeq *req, GoSeq *res) {
 }
 
 #define IS_FROM_GO(refnum) ((refnum) < 0)
+#define IS_NIL(refnum) ((refnum) == 0)
 
 // init_seq is called when the Go side is initialized.
 void init_seq() { tracker = [[RefTracker alloc] init]; }
@@ -376,6 +377,8 @@ GoSeqRef *go_seq_readRef(GoSeq *seq) {
   int32_t refnum = go_seq_readInt32(seq);
   if (IS_FROM_GO(refnum)) {
     return [[GoSeqRef alloc] initWithRefnum:refnum obj:NULL];
+  } else if (IS_NIL(refnum)) {
+    return nil;
   }
   return [[GoSeqRef alloc] initWithRefnum:refnum obj:[tracker get:refnum]];
 }
@@ -495,6 +498,9 @@ void go_seq_writeObjcRef(GoSeq *seq, id obj) {
 - (id)get:(int32_t)refnum {
   if (IS_FROM_GO(refnum)) {
     LOG_FATAL(@"get:invalid refnum for Objective-C objects");
+    return NULL;
+  }
+  if (IS_NIL(refnum)) {
     return NULL;
   }
   @synchronized(self) {

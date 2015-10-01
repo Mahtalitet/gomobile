@@ -424,7 +424,7 @@ func (g *objcGen) genFunc(pkgDesc, callDesc string, s *funcSummary, isMethod boo
 			ptype := g.objcType(p.typ)
 			g.Printf("GoSeqRef* %s_ref = go_seq_readRef(&out_);\n", p.name)
 			g.Printf("%s %s = %s_ref.obj;\n", ptype, p.name, p.name)
-			g.Printf("if (%s == NULL) {\n", p.name)
+			g.Printf("if (%s_ref != nil && %s == NULL) {\n", p.name, p.name)
 			g.Indent()
 			g.Printf("%s = [[%s alloc] initWithRef:%s_ref];\n", p.name, g.refTypeBase(p.typ), p.name)
 			g.Outdent()
@@ -450,7 +450,7 @@ func (g *objcGen) genFunc(pkgDesc, callDesc string, s *funcSummary, isMethod boo
 				g.Printf("}\n")
 			} else {
 				g.Printf("GoSeqRef* %s_ref = go_seq_readRef(&out_);\n", p.name)
-				g.Printf("if (%s != NULL) {\n", p.name)
+				g.Printf("if (%s_ref != nil && %s == NULL) {\n", p.name, p.name)
 				g.Indent()
 				g.Printf("*%s = %s_ref.obj;\n", p.name, p.name)
 				g.Printf("if (*%s == NULL) {\n", p.name)
@@ -587,7 +587,7 @@ func (g *objcGen) genInterfaceMethodProxy(obj *types.TypeName, s *funcSummary) {
 		if stype == "Ref" {
 			g.Printf("GoSeqRef* %s_ref = go_seq_readRef(in);\n", p.name)
 			g.Printf("%s %s = %s_ref.obj;\n", ptype, p.name, p.name)
-			g.Printf("if (%s == NULL) {\n", p.name)
+			g.Printf("if (%s_ref != nil && %s == NULL) {\n", p.name, p.name)
 			g.Indent()
 			g.Printf("%s = [[%s alloc] initWithRef:%s_ref];\n", p.name, g.refTypeBase(p.typ), p.name)
 			g.Outdent()
