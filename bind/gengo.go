@@ -393,7 +393,6 @@ func (g *goGen) gen() error {
 		}
 
 		switch obj := obj.(type) {
-		// TODO(crawshaw): case *types.Const:
 		// TODO(crawshaw): case *types.Var:
 		case *types.Func:
 			// TODO(crawshaw): functions that are not implementable from
@@ -410,7 +409,7 @@ func (g *goGen) gen() error {
 			case *types.Interface:
 				g.genInterface(obj)
 			}
-
+		case *types.Const:
 		default:
 			g.errorf("not yet supported, name for %v / %T", obj, obj)
 			continue

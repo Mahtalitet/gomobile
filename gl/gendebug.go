@@ -200,6 +200,10 @@ func main() {
 
 		// Print original body of function.
 		for _, s := range fn.Body.List {
+			if c := enqueueCall(s); c != nil {
+				c.Fun.(*ast.SelectorExpr).Sel.Name = "enqueueDebug"
+				setEnqueueBlocking(c)
+			}
 			printer.Fprint(buf, fset, s)
 			fmt.Fprintf(buf, "\n")
 		}
@@ -221,6 +225,43 @@ func main() {
 	}
 }
 
+func enqueueCall(stmt ast.Stmt) *ast.CallExpr {
+	exprStmt, ok := stmt.(*ast.ExprStmt)
+	if !ok {
+		return nil
+	}
+	call, ok := exprStmt.X.(*ast.CallExpr)
+	if !ok {
+		return nil
+	}
+	fun, ok := call.Fun.(*ast.SelectorExpr)
+	if !ok {
+		return nil
+	}
+	if fun.Sel.Name != "enqueue" {
+		return nil
+	}
+	return call
+}
+
+func setEnqueueBlocking(c *ast.CallExpr) {
+	lit := c.Args[0].(*ast.CompositeLit)
+	for _, elt := range lit.Elts {
+		kv := elt.(*ast.KeyValueExpr)
+		if kv.Key.(*ast.Ident).Name == "blocking" {
+			kv.Value = &ast.Ident{Name: "true"}
+			return
+		}
+	}
+	lit.Elts = append(lit.Elts, &ast.KeyValueExpr{
+		Key: &ast.Ident{
+			NamePos: lit.Rbrace,
+			Name:    "blocking",
+		},
+		Value: &ast.Ident{Name: "true"},
+	})
+}
+
 const preamble = `// Copyright 2014 The Go Authors.  All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -240,6 +281,7 @@ import (
 	"fmt"
 	"log"
 	"math"
+	"sync/atomic"
 	"unsafe"
 )
 
@@ -256,6 +298,20 @@ func (ctx *context) errDrain() string {
 		return fmt.Sprintf(" error: %v", errs)
 	}
 	return ""
+}
+
+func (ctx *context) enqueueDebug(c call) C.uintptr_t {
+	numCalls := atomic.AddInt32(&ctx.debug, 1)
+	if numCalls > 1 {
+		panic("concurrent calls made to the same GL context")
+	}
+	defer func() {
+		if atomic.AddInt32(&ctx.debug, -1) > 0 {
+			select {} // block so you see us in the panic
+		}
+	}()
+
+	return ctx.enqueue(c)
 }
 
 `
