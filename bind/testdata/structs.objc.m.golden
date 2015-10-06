@@ -18,6 +18,7 @@ static NSString* errDomain = @"go.structs";
 #define _CALL_Identity_ 1
 #define _CALL_IdentityWithError_ 2
 
+
 #define _GO_structs_S_DESCRIPTOR_ "go.structs.S"
 #define _GO_structs_S_FIELD_X_GET_ (0x00f)
 #define _GO_structs_S_FIELD_X_SET_ (0x01f)
@@ -35,7 +36,7 @@ static NSString* errDomain = @"go.structs";
 	return self;
 }
 
-- (double)X {
+- (double)x {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -56,7 +57,7 @@ static NSString* errDomain = @"go.structs";
 	go_seq_free(&out_);
 }
 
-- (double)Y {
+- (double)y {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -77,13 +78,13 @@ static NSString* errDomain = @"go.structs";
 	go_seq_free(&out_);
 }
 
-- (BOOL)Identity:(GoStructsS**)ret0_ error:(NSError**)error {
+- (BOOL)identity:(GoStructsS**)ret0_ error:(NSError**)error {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
 	go_seq_send(_GO_structs_S_DESCRIPTOR_, _GO_structs_S_Identity_, &in_, &out_);
 	GoSeqRef* ret0__ref = go_seq_readRef(&out_);
-	if (ret0_ != NULL) {
+	if (ret0__ref != nil && ret0_ == NULL) {
 		*ret0_ = ret0__ref.obj;
 		if (*ret0_ == NULL) {
 			*ret0_ = [[GoStructsS alloc] initWithRef:ret0__ref];
@@ -100,7 +101,7 @@ static NSString* errDomain = @"go.structs";
 	return ([_error length] == 0);
 }
 
-- (double)Sum {
+- (double)sum {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -125,7 +126,7 @@ GoStructsS* GoStructsIdentity(GoStructsS* s) {
 	go_seq_send(_DESCRIPTOR_, _CALL_Identity_, &in_, &out_);
 	GoSeqRef* ret0__ref = go_seq_readRef(&out_);
 	GoStructsS* ret0_ = ret0__ref.obj;
-	if (ret0_ == NULL) {
+	if (ret0__ref != nil && ret0_ == NULL) {
 		ret0_ = [[GoStructsS alloc] initWithRef:ret0__ref];
 	}
 	go_seq_free(&in_);
@@ -144,7 +145,7 @@ BOOL GoStructsIdentityWithError(GoStructsS* s, GoStructsS** ret0_, NSError** err
 	}
 	go_seq_send(_DESCRIPTOR_, _CALL_IdentityWithError_, &in_, &out_);
 	GoSeqRef* ret0__ref = go_seq_readRef(&out_);
-	if (ret0_ != NULL) {
+	if (ret0__ref != nil && ret0_ == NULL) {
 		*ret0_ = ret0__ref.obj;
 		if (*ret0_ == NULL) {
 			*ret0_ = [[GoStructsS alloc] initWithRef:ret0__ref];

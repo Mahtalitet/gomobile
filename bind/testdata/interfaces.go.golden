@@ -14,6 +14,8 @@ func proxy_Add3(out, in *seq.Buffer) {
 	param_r_ref := in.ReadRef()
 	if param_r_ref.Num < 0 { // go object
 		param_r = param_r_ref.Get().(interfaces.I)
+	} else if param_r_ref.Num == 0 { // nil object
+		param_r = nil
 	} else { // foreign object
 		param_r = (*proxyI)(param_r_ref)
 	}
@@ -26,6 +28,8 @@ func proxy_CallErr(out, in *seq.Buffer) {
 	param_e_ref := in.ReadRef()
 	if param_e_ref.Num < 0 { // go object
 		param_e = param_e_ref.Get().(interfaces.Error)
+	} else if param_e_ref.Num == 0 { // nil object
+		param_e = nil
 	} else { // foreign object
 		param_e = (*proxyError)(param_e_ref)
 	}
@@ -146,6 +150,8 @@ func (p *proxyI3) F() interfaces.I1 {
 	res_0_ref := out.ReadRef()
 	if res_0_ref.Num < 0 { // go object
 		res_0 = res_0_ref.Get().(interfaces.I1)
+	} else if res_0_ref.Num == 0 { // nil object
+		res_0 = nil
 	}
 	return res_0
 }

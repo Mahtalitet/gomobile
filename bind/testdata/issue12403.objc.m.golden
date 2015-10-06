@@ -25,9 +25,10 @@ static NSString* errDomain = @"go.issue12403";
 @property(strong, readonly) id ref;
 
 - (id)initWithRef:(id)ref;
-- (NSString*)FromJSON:(NSString*)jstr;
-- (BOOL)ToJSON:(NSString**)ret0_ error:(NSError**)error;
+- (NSString*)fromJSON:(NSString*)jstr;
+- (BOOL)toJSON:(NSString**)ret0_ error:(NSError**)error;
 @end
+
 
 @implementation GoIssue12403Parsable {
 }
@@ -38,7 +39,7 @@ static NSString* errDomain = @"go.issue12403";
 	return self;
 }
 
-- (NSString*)FromJSON:(NSString*)jstr {
+- (NSString*)fromJSON:(NSString*)jstr {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -50,7 +51,7 @@ static NSString* errDomain = @"go.issue12403";
 	return ret0_;
 }
 
-- (BOOL)ToJSON:(NSString**)ret0_ error:(NSError**)error {
+- (BOOL)toJSON:(NSString**)ret0_ error:(NSError**)error {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -77,14 +78,14 @@ static void proxyGoIssue12403Parsable(id obj, int code, GoSeq* in, GoSeq* out) {
 	case _GO_issue12403_Parsable_FromJSON_: {
 		id<GoIssue12403Parsable> o = (id<GoIssue12403Parsable>)(obj);
 		NSString* jstr = go_seq_readUTF8(in);
-		NSString* returnVal = [o FromJSON:jstr];
+		NSString* returnVal = [o fromJSON:jstr];
 		go_seq_writeUTF8(out, returnVal);
 	} break;
 	case _GO_issue12403_Parsable_ToJSON_: {
 		id<GoIssue12403Parsable> o = (id<GoIssue12403Parsable>)(obj);
 		NSString* ret0_;
 		NSError* error = NULL;
-		BOOL returnVal = [o ToJSON:&ret0_ error:&error];
+		BOOL returnVal = [o toJSON:&ret0_ error:&error];
 		go_seq_writeUTF8(out, ret0_);
 		if (returnVal) {
 			go_seq_writeUTF8(out, NULL);

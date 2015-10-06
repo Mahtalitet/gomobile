@@ -12,7 +12,13 @@ import (
 func proxy_Identity(out, in *seq.Buffer) {
 	// Must be a Go object
 	param_s_ref := in.ReadRef()
-	param_s := param_s_ref.Get().(*structs.S)
+	param_s_ref_get := param_s_ref.Get()
+	var param_s *structs.S
+	if param_s_ref_get == nil {
+		param_s = nil
+	} else {
+		param_s = param_s_ref_get.(*structs.S)
+	}
 	res := structs.Identity(param_s)
 	out.WriteGoRef(res)
 }
@@ -20,7 +26,13 @@ func proxy_Identity(out, in *seq.Buffer) {
 func proxy_IdentityWithError(out, in *seq.Buffer) {
 	// Must be a Go object
 	param_s_ref := in.ReadRef()
-	param_s := param_s_ref.Get().(*structs.S)
+	param_s_ref_get := param_s_ref.Get()
+	var param_s *structs.S
+	if param_s_ref_get == nil {
+		param_s = nil
+	} else {
+		param_s = param_s_ref_get.(*structs.S)
+	}
 	res, err := structs.IdentityWithError(param_s)
 	out.WriteGoRef(res)
 	if err == nil {

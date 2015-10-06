@@ -27,8 +27,53 @@ static NSString* errDomain = @"go.interfaces";
 @property(strong, readonly) id ref;
 
 - (id)initWithRef:(id)ref;
-- (BOOL)Err:(NSError**)error;
+- (BOOL)err:(NSError**)error;
 @end
+
+
+#define _GO_interfaces_I_DESCRIPTOR_ "go.interfaces.I"
+#define _GO_interfaces_I_Rand_ (0x10a)
+
+@interface GoInterfacesI : NSObject <GoInterfacesI> {
+}
+@property(strong, readonly) id ref;
+
+- (id)initWithRef:(id)ref;
+- (int32_t)rand;
+@end
+
+
+#define _GO_interfaces_I1_DESCRIPTOR_ "go.interfaces.I1"
+#define _GO_interfaces_I1_J_ (0x10a)
+
+
+#define _GO_interfaces_I2_DESCRIPTOR_ "go.interfaces.I2"
+#define _GO_interfaces_I2_G_ (0x10a)
+
+
+#define _GO_interfaces_I3_DESCRIPTOR_ "go.interfaces.I3"
+#define _GO_interfaces_I3_F_ (0x10a)
+
+@interface GoInterfacesI3 : NSObject <GoInterfacesI3> {
+}
+@property(strong, readonly) id ref;
+
+- (id)initWithRef:(id)ref;
+- (GoInterfacesI1*)f;
+@end
+
+
+#define _GO_interfaces_WithParam_DESCRIPTOR_ "go.interfaces.WithParam"
+#define _GO_interfaces_WithParam_HasParam_ (0x10a)
+
+@interface GoInterfacesWithParam : NSObject <GoInterfacesWithParam> {
+}
+@property(strong, readonly) id ref;
+
+- (id)initWithRef:(id)ref;
+- (void)hasParam:(BOOL)p0;
+@end
+
 
 @implementation GoInterfacesError {
 }
@@ -39,7 +84,7 @@ static NSString* errDomain = @"go.interfaces";
 	return self;
 }
 
-- (BOOL)Err:(NSError**)error {
+- (BOOL)err:(NSError**)error {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -62,7 +107,7 @@ static void proxyGoInterfacesError(id obj, int code, GoSeq* in, GoSeq* out) {
 	case _GO_interfaces_Error_Err_: {
 		id<GoInterfacesError> o = (id<GoInterfacesError>)(obj);
 		NSError* error = NULL;
-		BOOL returnVal = [o Err:&error];
+		BOOL returnVal = [o err:&error];
 		if (returnVal) {
 			go_seq_writeUTF8(out, NULL);
 		} else {
@@ -78,17 +123,6 @@ static void proxyGoInterfacesError(id obj, int code, GoSeq* in, GoSeq* out) {
 	}
 }
 
-#define _GO_interfaces_I_DESCRIPTOR_ "go.interfaces.I"
-#define _GO_interfaces_I_Rand_ (0x10a)
-
-@interface GoInterfacesI : NSObject <GoInterfacesI> {
-}
-@property(strong, readonly) id ref;
-
-- (id)initWithRef:(id)ref;
-- (int32_t)Rand;
-@end
-
 @implementation GoInterfacesI {
 }
 
@@ -98,7 +132,7 @@ static void proxyGoInterfacesError(id obj, int code, GoSeq* in, GoSeq* out) {
 	return self;
 }
 
-- (int32_t)Rand {
+- (int32_t)rand {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -115,16 +149,13 @@ static void proxyGoInterfacesI(id obj, int code, GoSeq* in, GoSeq* out) {
 	switch (code) {
 	case _GO_interfaces_I_Rand_: {
 		id<GoInterfacesI> o = (id<GoInterfacesI>)(obj);
-		int32_t returnVal = [o Rand];
+		int32_t returnVal = [o rand];
 		go_seq_writeInt32(out, returnVal);
 	} break;
 	default:
 		NSLog(@"unknown code %x for _GO_interfaces_I_DESCRIPTOR_", code);
 	}
 }
-
-#define _GO_interfaces_I1_DESCRIPTOR_ "go.interfaces.I1"
-#define _GO_interfaces_I1_J_ (0x10a)
 
 @implementation GoInterfacesI1 {
 }
@@ -135,7 +166,7 @@ static void proxyGoInterfacesI(id obj, int code, GoSeq* in, GoSeq* out) {
 	return self;
 }
 
-- (void)J {
+- (void)j {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -147,9 +178,6 @@ static void proxyGoInterfacesI(id obj, int code, GoSeq* in, GoSeq* out) {
 @end
 
 
-#define _GO_interfaces_I2_DESCRIPTOR_ "go.interfaces.I2"
-#define _GO_interfaces_I2_G_ (0x10a)
-
 @implementation GoInterfacesI2 {
 }
 
@@ -159,7 +187,7 @@ static void proxyGoInterfacesI(id obj, int code, GoSeq* in, GoSeq* out) {
 	return self;
 }
 
-- (void)G {
+- (void)g {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -171,17 +199,6 @@ static void proxyGoInterfacesI(id obj, int code, GoSeq* in, GoSeq* out) {
 @end
 
 
-#define _GO_interfaces_I3_DESCRIPTOR_ "go.interfaces.I3"
-#define _GO_interfaces_I3_F_ (0x10a)
-
-@interface GoInterfacesI3 : NSObject <GoInterfacesI3> {
-}
-@property(strong, readonly) id ref;
-
-- (id)initWithRef:(id)ref;
-- (GoInterfacesI1*)F;
-@end
-
 @implementation GoInterfacesI3 {
 }
 
@@ -191,14 +208,14 @@ static void proxyGoInterfacesI(id obj, int code, GoSeq* in, GoSeq* out) {
 	return self;
 }
 
-- (GoInterfacesI1*)F {
+- (GoInterfacesI1*)f {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
 	go_seq_send(_GO_interfaces_I3_DESCRIPTOR_, _GO_interfaces_I3_F_, &in_, &out_);
 	GoSeqRef* ret0__ref = go_seq_readRef(&out_);
 	GoInterfacesI1* ret0_ = ret0__ref.obj;
-	if (ret0_ == NULL) {
+	if (ret0__ref != nil && ret0_ == NULL) {
 		ret0_ = [[GoInterfacesI1 alloc] initWithRef:ret0__ref];
 	}
 	go_seq_free(&in_);
@@ -212,7 +229,7 @@ static void proxyGoInterfacesI3(id obj, int code, GoSeq* in, GoSeq* out) {
 	switch (code) {
 	case _GO_interfaces_I3_F_: {
 		id<GoInterfacesI3> o = (id<GoInterfacesI3>)(obj);
-		GoInterfacesI1* returnVal = [o F];
+		GoInterfacesI1* returnVal = [o f];
 		if ([(id<NSObject>)(returnVal) isKindOfClass:[GoInterfacesI1 class]]) {
 			id<goSeqRefInterface>retVal_proxy = (id<goSeqRefInterface>)(returnVal);
 			go_seq_writeRef(out, retVal_proxy.ref);
@@ -225,17 +242,6 @@ static void proxyGoInterfacesI3(id obj, int code, GoSeq* in, GoSeq* out) {
 	}
 }
 
-#define _GO_interfaces_WithParam_DESCRIPTOR_ "go.interfaces.WithParam"
-#define _GO_interfaces_WithParam_HasParam_ (0x10a)
-
-@interface GoInterfacesWithParam : NSObject <GoInterfacesWithParam> {
-}
-@property(strong, readonly) id ref;
-
-- (id)initWithRef:(id)ref;
-- (void)HasParam:(BOOL)p0;
-@end
-
 @implementation GoInterfacesWithParam {
 }
 
@@ -245,7 +251,7 @@ static void proxyGoInterfacesI3(id obj, int code, GoSeq* in, GoSeq* out) {
 	return self;
 }
 
-- (void)HasParam:(BOOL)p0 {
+- (void)hasParam:(BOOL)p0 {
 	GoSeq in_ = {};
 	GoSeq out_ = {};
 	go_seq_writeRef(&in_, self.ref);
@@ -262,7 +268,7 @@ static void proxyGoInterfacesWithParam(id obj, int code, GoSeq* in, GoSeq* out) 
 	case _GO_interfaces_WithParam_HasParam_: {
 		id<GoInterfacesWithParam> o = (id<GoInterfacesWithParam>)(obj);
 		BOOL p0 = go_seq_readBool(in);
-		[o HasParam:p0];
+		[o hasParam:p0];
 	} break;
 	default:
 		NSLog(@"unknown code %x for _GO_interfaces_WithParam_DESCRIPTOR_", code);
@@ -312,7 +318,7 @@ id<GoInterfacesI> GoInterfacesSeven() {
 	go_seq_send(_DESCRIPTOR_, _CALL_Seven_, &in_, &out_);
 	GoSeqRef* ret0__ref = go_seq_readRef(&out_);
 	id<GoInterfacesI> ret0_ = ret0__ref.obj;
-	if (ret0_ == NULL) {
+	if (ret0__ref != nil && ret0_ == NULL) {
 		ret0_ = [[GoInterfacesI alloc] initWithRef:ret0__ref];
 	}
 	go_seq_free(&in_);

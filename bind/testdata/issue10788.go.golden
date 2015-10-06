@@ -20,7 +20,13 @@ func proxyTestInterface_DoSomeWork(out, in *seq.Buffer) {
 	v := ref.Get().(issue10788.TestInterface)
 	// Must be a Go object
 	param_s_ref := in.ReadRef()
-	param_s := param_s_ref.Get().(*issue10788.TestStruct)
+	param_s_ref_get := param_s_ref.Get()
+	var param_s *issue10788.TestStruct
+	if param_s_ref_get == nil {
+		param_s = nil
+	} else {
+		param_s = param_s_ref_get.(*issue10788.TestStruct)
+	}
 	v.DoSomeWork(param_s)
 }
 
